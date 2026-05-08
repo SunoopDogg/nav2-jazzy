@@ -1,0 +1,9 @@
+# Placeholder — run SLAM first: ros2 launch nav2_custom_worlds warehouse_sim_launch.py slam:=True
+# Then save: ros2 run nav2_map_server map_saver_cli -f src/nav2_custom_worlds/maps/small_warehouse
+image: small_warehouse.pgm
+mode: trinary
+resolution: 0.05
+origin: [0.0, 0.0, 0.0]
+negate: 0
+occupied_thresh: 0.65
+free_thresh: 0.25
