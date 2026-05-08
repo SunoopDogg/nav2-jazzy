@@ -1,0 +1,16 @@
+[submodule "src/navigation2"]
+	path = src/navigation2
+	url = https://github.com/ros-navigation/navigation2.git
+	branch = jazzy
+[submodule "src/nav2_custom_worlds/models/bookstore_world"]
+	path = src/nav2_custom_worlds/models/bookstore_world
+	url = https://github.com/aws-robotics/aws-robomaker-bookstore-world.git
+	branch = ros2
+[submodule "src/nav2_custom_worlds/models/racetrack_world"]
+	path = src/nav2_custom_worlds/models/racetrack_world
+	url = https://github.com/aws-robotics/aws-robomaker-racetrack-world.git
+	branch = ros2
+[submodule "src/nav2_custom_worlds/models/small_warehouse_world"]
+	path = src/nav2_custom_worlds/models/small_warehouse_world
+	url = https://github.com/aws-robotics/aws-robomaker-small-warehouse-world.git
+	branch = ros2
