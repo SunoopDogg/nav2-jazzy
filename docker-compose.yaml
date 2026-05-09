@@ -1,0 +1,61 @@
+services:
+  # ===== AMD64 =====
+  nav2-jazzy:
+    image: cuda13.1.2:jazzy-uv-nvm
+    build: .
+    container_name: nav2-jazzy
+    volumes:
+      - .:/root/nav2-jazzy
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - uv-cache:/root/.cache/uv
+    environment:
+      - DISPLAY=${DISPLAY:-host.docker.internal:0}
+      - QT_X11_NO_MITSHM=1
+    network_mode: host
+    working_dir: /root/nav2-jazzy
+    ipc: host
+    privileged: true
+    tty: true
+
+  nav2-jazzy-gpu:
+    container_name: nav2-jazzy-gpu
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu, utility, compute, graphics]
+    extends:
+      service: nav2-jazzy
+    profiles:
+      - gpu
+
+  # ===== Jetson ARM64 =====
+  nav2-jazzy-jetson:
+    image: cudnn:9.12-jetson:jazzy-uv-nvm
+    build:
+      args:
+        BASE_IMAGE: dustynv/ros:jazzy-ros-base-r36.4.0-cu128-24.04
+    container_name: nav2-jazzy-jetson
+    volumes:
+      - .:/root/nav2-jazzy
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - /tmp/argus_socket:/tmp/argus_socket
+      - ~/.Xauthority:/root/.Xauthority
+      - uv-cache:/root/.cache/uv
+    environment:
+      - DISPLAY=${DISPLAY}
+      - QT_X11_NO_MITSHM=1
+      - XAUTHORITY=/root/.Xauthority
+    network_mode: host
+    working_dir: /root/nav2-jazzy
+    ipc: host
+    privileged: true
+    profiles:
+      - jetson
+    runtime: nvidia
+    tty: true
+
+volumes:
+  uv-cache:
