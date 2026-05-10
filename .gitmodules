@@ -14,3 +14,6 @@
 	path = src/nav2_custom_worlds/models/small_warehouse_world
 	url = https://github.com/aws-robotics/aws-robomaker-small-warehouse-world.git
 	branch = ros2
+[submodule "src/unitree_ros2"]
+	path = src/unitree_ros2
+	url = https://github.com/unitreerobotics/unitree_ros2
