@@ -1,0 +1,125 @@
+<?xml version="1.0"?>
+<sdf version="1.9">
+  <model name="go2">
+
+    <!-- Virtual ground-contact link; canonical link for VelocityControl -->
+    <link name="base_footprint">
+      <gravity>false</gravity>
+      <inertial>
+        <mass>0.001</mass>
+        <inertia>
+          <ixx>0.0001</ixx><ixy>0</ixy><ixz>0</ixz>
+          <iyy>0.0001</iyy><iyz>0</iyz>
+          <izz>0.0001</izz>
+        </inertia>
+      </inertial>
+    </link>
+
+    <joint name="base_joint" type="fixed">
+      <parent>base_footprint</parent>
+      <child>base_link</child>
+    </joint>
+
+    <!-- Body: 0.33m above footprint (Go2 standing body-center height) -->
+    <link name="base_link">
+      <gravity>false</gravity>
+      <pose>0 0 0.33 0 0 0</pose>
+      <inertial>
+        <mass>15.0</mass>
+        <!-- Solid box 0.65x0.31x0.09: Ixx=0.1303, Iyy=0.5383, Izz=0.6483 -->
+        <inertia>
+          <ixx>0.1303</ixx><ixy>0</ixy><ixz>0</ixz>
+          <iyy>0.5383</iyy><iyz>0</iyz>
+          <izz>0.6483</izz>
+        </inertia>
+      </inertial>
+      <visual name="trunk">
+        <!-- To use real meshes once go2_description is built:
+             <uri>model://go2_description/meshes/trunk.STL</uri>
+             Requires GZ_SIM_RESOURCE_PATH to include install/go2_description/share/ -->
+        <geometry>
+          <box><size>0.65 0.31 0.09</size></box>
+        </geometry>
+        <material>
+          <ambient>0.1 0.1 0.1 1</ambient>
+          <diffuse>0.15 0.15 0.15 1</diffuse>
+          <specular>0.3 0.3 0.3 1</specular>
+        </material>
+      </visual>
+      <collision name="trunk">
+        <geometry>
+          <box><size>0.65 0.31 0.09</size></box>
+        </geometry>
+      </collision>
+    </link>
+
+    <joint name="lidar_joint" type="fixed">
+      <parent>base_link</parent>
+      <child>lidar_link</child>
+    </joint>
+
+    <!-- LiDAR: 0.285m forward, 0.048m above base_link center -->
+    <link name="lidar_link">
+      <gravity>false</gravity>
+      <pose>0.285 0 0.378 0 0 0</pose>
+      <inertial>
+        <mass>0.1</mass>
+        <!-- Cylinder r=0.04, h=0.04: Ixx=Iyy=5.3e-5, Izz=8.0e-5 -->
+        <inertia>
+          <ixx>0.000053</ixx><ixy>0</ixy><ixz>0</ixz>
+          <iyy>0.000053</iyy><iyz>0</iyz>
+          <izz>0.000080</izz>
+        </inertia>
+      </inertial>
+      <visual name="lidar_body">
+        <geometry>
+          <cylinder><radius>0.04</radius><length>0.04</length></cylinder>
+        </geometry>
+        <material>
+          <ambient>0.2 0.2 0.8 1</ambient>
+          <diffuse>0.2 0.2 0.8 1</diffuse>
+        </material>
+      </visual>
+      <sensor name="lidar" type="gpu_lidar">
+        <update_rate>10</update_rate>
+        <topic>scan</topic>
+        <gz_frame_id>lidar_link</gz_frame_id>
+        <lidar>
+          <scan>
+            <horizontal>
+              <samples>360</samples>
+              <resolution>1</resolution>
+              <min_angle>-3.14159265</min_angle>
+              <max_angle>3.14159265</max_angle>
+            </horizontal>
+          </scan>
+          <range>
+            <min>0.12</min>
+            <max>25.0</max>
+            <resolution>0.015</resolution>
+          </range>
+          <noise>
+            <type>gaussian</type>
+            <mean>0</mean>
+            <stddev>0.01</stddev>
+          </noise>
+        </lidar>
+      </sensor>
+    </link>
+
+    <!-- VelocityControl: cmd_vel → direct body velocity (no joint simulation) -->
+    <plugin filename="gz-sim-velocity-control-system"
+            name="gz::sim::systems::VelocityControl">
+      <topic>cmd_vel</topic>
+    </plugin>
+
+    <!-- OdometryPublisher: odom→base_footprint TF + /odom topic -->
+    <plugin filename="gz-sim-odometry-publisher-system"
+            name="gz::sim::systems::OdometryPublisher">
+      <odom_frame>odom</odom_frame>
+      <robot_base_frame>base_footprint</robot_base_frame>
+      <publish_tf>true</publish_tf>
+    </plugin>
+
+  </model>
+</sdf>

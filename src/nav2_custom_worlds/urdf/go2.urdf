@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<robot name="go2">
+
+  <!-- Virtual ground-contact origin; AMCL localizes this frame -->
+  <link name="base_footprint"/>
+
+  <joint name="base_joint" type="fixed">
+    <parent link="base_footprint"/>
+    <child link="base_link"/>
+    <origin xyz="0 0 0.33" rpy="0 0 0"/>
+  </joint>
+
+  <!-- Body: 0.65x0.31x0.09m, ~15kg -->
+  <!-- Replace box with mesh once go2_description submodule is added:
+       <mesh filename="package://go2_description/meshes/trunk.STL"/>
+       Requires colcon build --packages-select go2_description -->
+  <link name="base_link">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="15.0"/>
+      <inertia ixx="0.1303" ixy="0" ixz="0" iyy="0.5383" iyz="0" izz="0.6483"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry><box size="0.65 0.31 0.09"/></geometry>
+      <material name="go2_dark">
+        <color rgba="0.15 0.15 0.15 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry><box size="0.65 0.31 0.09"/></geometry>
+    </collision>
+  </link>
+
+  <joint name="lidar_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="lidar_link"/>
+    <origin xyz="0.285 0 0.048" rpy="0 0 0"/>
+  </joint>
+
+  <link name="lidar_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry><cylinder radius="0.04" length="0.04" /></geometry>
+      <material name="lidar_blue">
+        <color rgba="0.2 0.2 0.8 1.0"/>
+      </material>
+    </visual>
+  </link>
+
+</robot>
